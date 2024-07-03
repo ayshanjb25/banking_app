@@ -14,12 +14,13 @@ import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { signUp, signIn, getLoggedInUser } from '@/lib/actions/user.actions';
+import PlaidLink from './PlaidLink';
 
 const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
 
 
   const formSchema = authFormSchema(type);
@@ -38,23 +39,23 @@ const AuthForm = ({ type }: { type: string }) => {
     setIsLoading(true);
     try {
       //sign up with Appwrite & create a plaid link token
-
+     
       if (type === 'sign-up') {
-        // const userData={
-        //   firstName:data.firstName,
-        //   lastName:data.lastName,
-        //   address:data.address,
-        //   city:data.city,
-        //   state:data.state,
-        //   postalCode:data.postalCode,
-        //   dateOfBirth:data.dateOfBirth,
-        //   ssn:data.firstName,
-        //   email:data.email,
-        //   password:data.password,
+        const userData={
+          firstName:data.firstName!,
+          lastName:data.lastName!,
+          address1:data.address1!,
+          city:data.city!,
+          state:data.state!,
+          postalCode:data.postalCode!,
+          dateOfBirth:data.dateOfBirth!,
+          ssn:data.ssn!,
+          email:data.email,
+          password:data.password,
 
-        // }
+        }
 
-        const newUser = await signUp(data);
+        const newUser = await signUp(userData);
         setUser(newUser);
       }
 
@@ -91,7 +92,12 @@ const AuthForm = ({ type }: { type: string }) => {
           </h1>
         </div>
       </header>
-      {user ? (<div className='flex flex-col gap-4'>{/* PlaidLink*/}</div>) : (<><Form {...form}>
+       {user ? ( 
+      <div className='flex flex-col gap-4'><PlaidLink user={user} variant='primary' /></div>
+      
+       ) : (<> 
+      
+      <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {type === 'sign-up' && (<>
 
@@ -127,7 +133,9 @@ const AuthForm = ({ type }: { type: string }) => {
 
         <footer className='flex justify-center gap-1'>
           <p className='text-14 font-normal text-gray-600'>{type === 'sign-in' ? "Don't have an account?" : "Already have an account?"}</p>
-          <Link href={type === 'sign-in' ? "/sign-up" : "/sign-in"} className="form-link"> {type === 'sign-in' ? "Sign Up" : "Sign In"}</Link></footer></>)}
+          <Link href={type === 'sign-in' ? "/sign-up" : "/sign-in"} className="form-link"> {type === 'sign-in' ? "Sign Up" : "Sign In"}</Link></footer>
+          
+           </>)} 
     </section>
   )
 }
